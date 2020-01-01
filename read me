@@ -1,0 +1,20 @@
+Hello,
+
+Firstly, I tried to solve this problem using periodic boundary conditions that's why I had a function " ceneter of center_momentum" because
+ I wanted to subtract the drift velocity of the center of mass of the system. But as I read the problem assumes the end point masses to be fix so I change a bit the code. Now I
+ I have set the velocity as you can see to zero because the system does not drift.
+ see --> acceleration function and energy where the for loop range is (1,self.N-1) and the end point masses contribution is calculated before the for loop.
+
+ Anw the main idea:
+
+ I pass the initial conditions from the text file into an array (first column position, second column velocities). I think we have to random generate the initial conditions . In the
+ constructor of the class( i.e __init__) I generate a tria diagonal matrix where where it corresponds to the matrix of the unperturbed hamiltonian. I use the eigenvectors as the modes of the
+ actual problem where I assume that the eigenvectors of the perturbed hamiltonian are the same with unperturbed hamiltonian.
+
+ Then I use velocity verlet to solve the problem( please check that I am doing it correctly but I think it is okay.) And every time I rotate to the eigenbasis to find the normal modes.
+
+
+ You can use the functions that we used in the com mod to visualise it in vmd
+
+ In addition, you increase the Tmax, but you have to modify a bit the dimensions of the arrays because I get an error for the dimensions of the arrays(i.e. in the verlet
+ you can use mod function to get data every ten iterations.)

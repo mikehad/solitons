@@ -14,8 +14,9 @@ class verlet(object):
         for i in range(self.N):
             self.solitons_array[i,0]= 1*np.sin(np.pi * (i+1) / (self.N+1)) #np.loadtxt(file_handle)
             self.solitons_array[i,1]= 0.0
-
-
+        vmd_file= "vmd.xyz"
+        self.outfile = open(vmd_file, "w")
+        self.ne=10 #this is for the output file to skip points
         self.dt = 0.1
         self.Tmax=10000
         self.numstep = int(self.Tmax/self.dt)                    #PARAMETERS
@@ -37,6 +38,9 @@ class verlet(object):
         self.rotation_matrix=  self.eigen()[1]
         self.eigenvalue_array = -self.eigen()[0]
         self.total_energy=self.energy(0)
+        self.trajectory(0)
+
+
 
 
     # in the  case we have periodic boundary conditions
@@ -76,13 +80,23 @@ class verlet(object):
 
     # integrator
     def velocity_verlet(self):
-        for k in range(self.numstep):
+        for k in range(1,self.numstep):
             self.update_position()
             acceleration_list_new = self.acceleration()
             self.update_velocity(0.5*(acceleration_list_new+self.acceleration_array))
             self.acceleration_array = acceleration_list_new
             self.energy_list.append(self.energy(k))
             self.position_array[:,k] += (self.solitons_array[:,0])
+            self.trajectory(k)
+        self.outfile.close()
+
+    def trajectory(self, k):
+
+        if k % self.ne == 0:
+            self.outfile.write(str(self.N) + "\n")
+            self.outfile.write("Point = " + str(k/self.ne + 1) + "\n")
+            for j in range(self.N):
+                self.outfile.write("mass"+str(j+1) + " " + str(self.position_array[j,k]) + " " + str(j/5.0) + " " + str(0.0) + "\n")
 
 
     # here I am getting the eigenvectors for the rotation matrix to find the normal modes
@@ -114,7 +128,7 @@ class verlet(object):
         plt.title(" Energy modes vs Time")
         plt.xlabel("Time")
         plt.ylabel("Energy")
-        for i in range(self.N-3, self.N):
+        for i in range(self.N-5, self.N):
             plt.plot(self.time_list[10:], self.modes_array[i,10:], label= "mode"+ str(32-i))
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
         plt.show()

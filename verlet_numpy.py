@@ -24,7 +24,7 @@ class verlet(object):
         self.alpha=0.25
         self.k_spring=1.
 
-        self.total_velocity =0. #self.center_momentum() #I Fix the drift of the center of mass(sometime I choose initial velocities where the cm velocity is zero for convinience)
+        
 
         self.acceleration_array= self.acceleration()
         self.position_array= np.zeros((self.N, int(self.numstep)))

@@ -3,7 +3,10 @@ import matplotlib.pyplot as plt
 from scipy.sparse import diags
 from scipy.linalg import eigh
 
-
+"""
+The purpose of this simulation was to reproduce results from Fermi - Pasta - Ulam - Tsingou work in 1995.
+We use velocity Verlet integrator to solve the problem.
+"""
 
 
 class verlet(object):
@@ -12,8 +15,8 @@ class verlet(object):
         self.N=32
         self.solitons_array = np.zeros((self.N,2))
         for i in range(self.N):
-            self.solitons_array[i,0]= 1*np.sin(np.pi * (i+1) / (self.N+1)) #np.loadtxt(file_handle)
-            self.solitons_array[i,1]= 0.0
+            self.solitons_array[i,0]= 1*np.sin(np.pi * (i+1) / (self.N+1))  #positions
+            self.solitons_array[i,1]= 0.0 #velocities
         vmd_file= "vmd.xyz"
         self.outfile = open(vmd_file, "w")
         self.ne=10 #this is for the output file to skip points
@@ -32,7 +35,7 @@ class verlet(object):
         self.position_array[:,0] += self.solitons_array[:,0]
         self.energy_list=[] #list for the total energy_list
 
-        # here I create the rotation matrix for the harmonic case I assume that the modes do not change a lot
+        # here I create the rotation matrix for the harmonic case
         self.tria=diags([1, -2, 1], [-1, 0, 1], shape=(self.N, self.N)).toarray()
         self.tria=self.tria*self.k_spring
         self.rotation_matrix=  self.eigen()[1]
@@ -41,12 +44,6 @@ class verlet(object):
         self.trajectory(0)
 
 
-
-
-    # in the  case we have periodic boundary conditions
-    def center_momentum(self):
-        total_velocity= np.mean(self.solitons_array, axis=0)[1]
-        return total_velocity
 
     #function to calculate the acceleration
     def acceleration(self):
@@ -90,6 +87,7 @@ class verlet(object):
             self.trajectory(k)
         self.outfile.close()
 
+        #for vmd file
     def trajectory(self, k):
 
         if k % self.ne == 0:
